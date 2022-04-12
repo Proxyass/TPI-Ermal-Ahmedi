@@ -63,7 +63,17 @@ namespace ErmalTpi.ViewModel
         }
 
 
-       
+        //COVID
+        private Brush _CovidColor = Brushes.Transparent;
+
+        public Brush CovidColor
+        {
+            get { return _CovidColor; }
+            set { _CovidColor = value; RaisePropertyChanged("CovidColor"); }
+        }
+
+
+
         //Couleur de fond du lecteur de carte
         private Brush _readerBackColor = Brushes.Transparent;
 
@@ -300,7 +310,7 @@ namespace ErmalTpi.ViewModel
             //Si c'est vrai (true) alors la couleur va etre rouge est les accès seront refusé
             if (isMoretThan80 == true)
             {
-                BackColor = Brushes.Red;
+                CovidColor = Brushes.Red;
                 TextBlockee = "Certificat NON valide";
                 System.Media.SoundPlayer playerrr = new System.Media.SoundPlayer(@"C:\Program Files (x86)\sons\denied.wav");
                 playerrr.Play();
@@ -308,7 +318,7 @@ namespace ErmalTpi.ViewModel
             //  otherwise he can access and the color will be green
             else
             {
-                BackColor = Brushes.Green;
+                CovidColor = Brushes.Green;
                 TextBlockee = "Certificat Valide";
                 System.Media.SoundPlayer playerr = new System.Media.SoundPlayer(@"C:\Program Files (x86)\sons\success.wav");
                 playerr.Play();

@@ -204,7 +204,7 @@
             </Grid>
 
 
-            <Border  Background="{Binding BackColor}"  Margin="19,48,286,109" BorderBrush="Black" BorderThickness=".5" Grid.Column="1"/>
+            <Border  Background="{Binding CovidColor}"  Margin="19,48,286,109" BorderBrush="Black" BorderThickness=".5" Grid.Column="1"/>
             <TextBlock
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
