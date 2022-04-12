@@ -205,9 +205,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Ressources\CHUV-LOGO.jpg" />
-  </ItemGroup>
-  <ItemGroup>
+    <Resource Include="Ressources\CHUV-LOGOONE.png" />
     <Content Include="Ressources\denied.wav" />
     <Content Include="Ressources\success.wav" />
   </ItemGroup>

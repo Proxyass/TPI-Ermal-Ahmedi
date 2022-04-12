@@ -211,7 +211,9 @@
                     FontSize="18" Grid.Column="1" Margin="19,13,0,0" Height="30" Width="170" RenderTransformOrigin="0.56,0.479" Text="{Binding TextBlockee}" />
             <Rectangle Grid.Column="1" HorizontalAlignment="Left" Height="80" Margin="8,10,0,0" Stroke="Black" VerticalAlignment="Top" Width="194"/>
             <Image x:Name="image" HorizontalAlignment="Left" Height="25" Margin="10,147,0,0" VerticalAlignment="Top" Width="135" Source="/View/CHUV-LOGO.jpg" RenderTransformOrigin="0.503,0.587"/>
-            <Grid HorizontalAlignment="Left" Height="27" Margin="0,143,0,0" VerticalAlignment="Top" Width="123"/>
+            <Grid HorizontalAlignment="Left" Height="57" Margin="0,113,0,0" VerticalAlignment="Top" Width="280">
+                <Image x:Name="LOGO_CHUV" HorizontalAlignment="Left" Height="53" VerticalAlignment="Top" Width="276" Source="/Ressources/CHUV-LOGOONE.png"/>
+            </Grid>
         </Grid>
 
 
