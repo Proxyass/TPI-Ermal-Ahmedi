@@ -125,7 +125,7 @@ namespace ErmalTpi.ViewModel
                         {
                             //Recupération de l'user dans la DB2 (Db_Externe) et -> affichage dans la datagrid
                             GetDB2Users();
-                            MessageBox.Show("De quel utilisateur s'agis t-il ?");
+
                         }
                         else
                         {
@@ -302,12 +302,16 @@ namespace ErmalTpi.ViewModel
             {
                 BackColor = Brushes.Red;
                 TextBlockee = "Certificat NON valide";
+                System.Media.SoundPlayer playerrr = new System.Media.SoundPlayer(@"C:\Program Files (x86)\sons\denied.wav");
+                playerrr.Play();
             }
             //  otherwise he can access and the color will be green
             else
             {
                 BackColor = Brushes.Green;
                 TextBlockee = "Certificat Valide";
+                System.Media.SoundPlayer playerr = new System.Media.SoundPlayer(@"C:\Program Files (x86)\sons\success.wav");
+                playerr.Play();
             }
         }
         #endregion
