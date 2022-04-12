@@ -141,7 +141,7 @@ namespace ErmalTpi.ViewModel
                         {
                             //Si il n'y a pas d'utilisateur dans la DB1 (Db_Interne) -> changement de couleur en orange
                             BackColor = Brushes.Orange;
-                            
+
                         }
                     }
                     break;
@@ -183,6 +183,7 @@ namespace ErmalTpi.ViewModel
                     if (NoReaderFound(readerNames))
                     {
                         ReaderBackColor = Brushes.Red;
+                        MessageBox.Show("Pas de lecteur détecté, veuillez brancher le lecteur ou appeler le service informatique.");
                         return;
                     }
                     // Lecteur détecté affichage en vert
@@ -279,6 +280,8 @@ namespace ErmalTpi.ViewModel
             if (!Users.Any())
             {
                 BackColor = Brushes.Red;
+                System.Media.SoundPlayer playerrr = new System.Media.SoundPlayer(@"C:\Program Files (x86)\sons\denied.wav");
+                playerrr.Play();
             }
             //Si il n'y a qu'un seul utilisateur alors
             else if (Users.Count == 1)
@@ -301,23 +304,26 @@ namespace ErmalTpi.ViewModel
             ChangeColor();
         }
         #endregion
-        #region This method check for vac date whether it is more than 180 days or not
+        #region Cette méthode vérifi si la date_cert est <= à 180 jours
         // Vérification du 
         private void CheckCert_Date()
         {
-            //On récupère l'infos sur la date de : date_cert et on test si elle est  à plus de 180 jours ou pas.
+            //On récupère l'infos sur la date de : date_cert.
             var isMoretThan80 = DataContext.IsUserVacMoreThanOneEightyDays(SelectedUser);
             //Si c'est vrai (true) alors la couleur va etre rouge est les accès seront refusé
             if (isMoretThan80 == true)
             {
+                BackColor = Brushes.Tomato;
                 CovidColor = Brushes.Red;
                 TextBlockee = "Certificat NON valide";
+                MessageBox.Show("L'utilisateur ne peut pas rentré dans l'évenement car son certificat COVID n'est pas valide.");
                 System.Media.SoundPlayer playerrr = new System.Media.SoundPlayer(@"C:\Program Files (x86)\sons\denied.wav");
                 playerrr.Play();
             }
-            //  otherwise he can access and the color will be green
+            //  Sinon les accès son accorder et il aura accès à l'évenement.
             else
             {
+                BackColor = Brushes.RoyalBlue;
                 CovidColor = Brushes.Green;
                 TextBlockee = "Certificat Valide";
                 System.Media.SoundPlayer playerr = new System.Media.SoundPlayer(@"C:\Program Files (x86)\sons\success.wav");
