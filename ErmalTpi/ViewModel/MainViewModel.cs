@@ -43,14 +43,27 @@ namespace ErmalTpi.ViewModel
             set { _uid = value; RaisePropertyChanged("UID"); }
         }
 
+        private string _TextBlockee;
+
+        public string TextBlockee
+        {
+            get { return _TextBlockee; }
+            set { _TextBlockee = value; RaisePropertyChanged("TextBlockee"); }
+        }
+        
+
         //Couleur de fond pour l'utilisateur
         private Brush _backColor = Brushes.Transparent;
+
 
         public Brush BackColor
         {
             get { return _backColor; }
             set { _backColor = value; RaisePropertyChanged("BackColor"); }
         }
+
+
+       
         //Couleur de fond du lecteur de carte
         private Brush _readerBackColor = Brushes.Transparent;
 
@@ -58,6 +71,8 @@ namespace ErmalTpi.ViewModel
         {
             get { return _readerBackColor; }
             set { _readerBackColor = value; RaisePropertyChanged("ReaderBackColor"); }
+
+
         }
         //All users
         private ObservableCollection<User> _users;
@@ -76,7 +91,7 @@ namespace ErmalTpi.ViewModel
             set { _selectUser = value; RaisePropertyChanged("SelectedUser"); }
         }
 
-
+        #region Initialisation vue
         public MainViewModel()
         {
             //Initialisation de l'user
@@ -85,7 +100,12 @@ namespace ErmalTpi.ViewModel
             Command = new RelayCommand<string>(PerformAction);
             //Lecture de la carte si le lecteur est connecté
             ReadCard();
+            // Initialisation du text (Validité)
+            TextBlockee = "Validité du certificat";
         }
+        #endregion
+
+        #region Recherche via UID
         private void PerformAction(string obj)
         {
             switch (obj)
@@ -103,20 +123,32 @@ namespace ErmalTpi.ViewModel
                         SelectedUser = DataContext.GetInterneUser(UID);
                         if (SelectedUser != null)
                         {
-                            //Recupération de l'user dans la DB2 (Db_Externe) et -> affichage dans la datagrid (bientot)
-                            MessageBox.Show("Super ça fonctionne bravo !!!!");
-
+                            //Recupération de l'user dans la DB2 (Db_Externe) et -> affichage dans la datagrid
+                            GetDB2Users();
+                            MessageBox.Show("De quel utilisateur s'agis t-il ?");
                         }
                         else
                         {
                             //Si il n'y a pas d'utilisateur dans la DB1 (Db_Interne) -> changement de couleur en orange
                             BackColor = Brushes.Orange;
+                            
                         }
                     }
                     break;
-                //
-
-                //
+                case "SearchManually":
+                    if (string.IsNullOrEmpty(SelectedUser.Nom1) || string.IsNullOrEmpty(SelectedUser.Prenom1))
+                    {
+                        MessageBox.Show("Merci de remplir complétement le formulaire de recherche");
+                        return;
+                    }
+                    //Search user manually and show in datagrid
+                    GetDB2UsersManually();
+                    // Success
+                    break;
+                //Get user cart_date and compare
+                case "GerUserCertDate":
+                    CheckCert_Date();
+                    break;
 
                 //Lecture de la carte
                 case "ReadCard":
@@ -127,6 +159,7 @@ namespace ErmalTpi.ViewModel
                     break;
             }
         }
+        #endregion
 
         #region lecture de la carts + détection si il y'a le lecteur connecté ou pas (https://github.com/danm-de/pcsc-sharp/blob/master/Examples/ISO7816-4/Transmit/Program.cs)
         public void ReadCard()
@@ -179,7 +212,6 @@ namespace ErmalTpi.ViewModel
                             var receiveBuffer = new byte[256];
                             var command = apdu.ToArray();
 
-
                             var bytesReceived = rfidReader.Transmit(
                                 sendPci, // Protocol Control Information (T0, T1 or Raw)
                                 command, // command APDU
@@ -218,7 +250,18 @@ namespace ErmalTpi.ViewModel
         #endregion
 
 
-        //
+        #region Get users manually
+        private void GetDB2UsersManually()
+        {
+            //Get users manually
+            Users = DataContext.GetUsersManually(SelectedUser);
+
+            if (Users.Count is 0)
+                SelectedUser = new User();
+            //change color accordingly
+            ChangeColor();
+        }
+        #endregion
 
         private void ChangeColor()
         {
@@ -230,21 +273,24 @@ namespace ErmalTpi.ViewModel
             //Si il n'y a qu'un seul utilisateur alors
             else if (Users.Count == 1)
             {
-                //Check la date
-
-                //get his cert_date and verify
-
+                //Check la date et vérification
                 CheckCert_Date();
-
-
-
             }
-            //if there are morethen one user, then let user select one
+            //Si il y'a + d'un (1) utilisteur dispo , alors on laisse l'utilisateur séléctionner un (1)
             else if (Users.Count > 1)
             {
-                BackColor = Brushes.Orange;
+                BackColor = Brushes.Orange; 
             }
         }
+        #region Get users from db2 filtered by nom,prenom and date
+        private void GetDB2Users()
+        {
+            //Get users
+            Users = DataContext.GetUsers(SelectedUser);
+            //change color accordingly
+            ChangeColor();
+        }
+        #endregion
         #region This method check for vac date whether it is more than 180 days or not
         // Vérification du 
         private void CheckCert_Date()
@@ -254,18 +300,18 @@ namespace ErmalTpi.ViewModel
             //Si c'est vrai (true) alors la couleur va etre rouge est les accès seront refusé
             if (isMoretThan80 == true)
             {
-
                 BackColor = Brushes.Red;
+                TextBlockee = "Certificat NON valide";
             }
             //  otherwise he can access and the color will be green
             else
             {
-
                 BackColor = Brushes.Green;
+                TextBlockee = "Certificat Valide";
             }
         }
         #endregion
-
+        
 
     }
 }

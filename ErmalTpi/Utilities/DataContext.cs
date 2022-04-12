@@ -12,7 +12,7 @@ namespace ErmalTpi.Utilities
 {
     public static class DataContext
     {
-        // Initialisation de connexion sur les DB_Interne (1) & Db_Externe (2)
+        // Initialisation de connection sur les DB_Interne (1) & Db_Externe (2)
         public static MySqlConnection InterneConnection => new MySqlConnection(ConfigurationManager.ConnectionStrings["InterneConnection"].ConnectionString);
         public static MySqlConnection ExterneConnection => new MySqlConnection(ConfigurationManager.ConnectionStrings["ExterneConnection"].ConnectionString);
         #region Traitement sur BDD interne avec UID correspondant
@@ -27,14 +27,14 @@ namespace ErmalTpi.Utilities
 
                 // Ouverture de connexion
                 con.Open();
-
+                
                 // Requete qui va afficher l'UID selon ce que l'utilisateur à mis dans le champs @no_mifare
                 string query = "Select no_carte from stock_carte where no_mifare=@no_mifare";
 
                 //Envoi de la commande et des parametre de connexion
                 using (var command = new MySqlCommand(query, con))
                 {
-                    //Add parameters to the command with type of string
+                    //Ajout du parametre a la command avec le type de string
                     command.Parameters.Add("no_mifare", MySqlDbType.String).Value = Id;
 
                     //Execute le lecteure
@@ -112,15 +112,100 @@ namespace ErmalTpi.Utilities
             return false;
         }
         #endregion
+         
+        #region Affichage sur la DataGrid depuis DB_Externe
+        //ObservableCollection<T>(List<T>)	Initialise une nouvelle instance de la classe ObservableCollection<T> qui contient des éléments copiés à partir de la liste spécifiée
+        internal static ObservableCollection<User> GetUsers(User user)
+        {
+            //decalre and initialize user collection
+            ObservableCollection<User> users = new ObservableCollection<User>();
+            //Get db2 connection
+            using (var con = ExterneConnection)
+            {
+                //Ouverture de la connexion
+                con.Open();
+                //Je récupère l'ID , nom1, nom2, prenom 1, prenom2 , date de naissance -> sur la table utilisateur avec les paramètre : nom1, prenom1
+                string query = "Select id_user,nom1,nom2,prenom1,prenom2,date_naissance from utilisateur where nom1=@nom1 and prenom1=@prenom1";
+                //Create command
+                using (var command = new MySqlCommand(query, con))
+                {
+                    //Add parameters to the command
+                    command.Parameters.Add("nom1", MySqlDbType.String).Value = user.Nom1;
+                    command.Parameters.Add("prenom1", MySqlDbType.String).Value = user.Prenom1;
+                    //Execute the reader
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            // J'ajoute tous le utilisateurs dans la collection
+                            users.Add(
+                                new User()
+                                {
+                                    UserId = reader.GetInt32(0),  
+                                    Nom1 = reader.GetString(1),
+                                    Nom2 = reader.GetString(2),
+                                    Prenom1 = reader.GetString(3),
+                                    Prenom2 = reader.GetString(4),
+                                    Date_Naissance = reader.GetDateTime(5)
+                                }
+                                );
+                        }
+                    }
+                }
+            }
 
-        #region affichage sur datagrid
-
+            return users;
+        }
         #endregion
-        #region recherche manuelle
+
+        #region Recherche Manuelle
+        internal static ObservableCollection<User> GetUsersManually(User user)
+        {
+            //decalre and initialize user collection
+            ObservableCollection<User> users = new ObservableCollection<User>();
+            using (var con = ExterneConnection)
+            {
+                //open the connection
+                con.Open();
+                // Ici c'est le requete avec la recherche manuelle
+                // Je sélectionne : id_user,nom1,nom2,prenom1,prenom2,date_naissance -> utilisateur avec les parametre nom1 , prenom1 et la date de naissance
+                string query = "Select id_user,nom1,nom2,prenom1,prenom2,date_naissance from utilisateur where nom1=@nom1 and prenom1=@prenom1 and date_naissance=@date_naissance";
+                //Create command
+                using (var command = new MySqlCommand(query, con))
+                {
+                    //Add parameters to the command
+                    command.Parameters.Add("nom1", MySqlDbType.String).Value = user.Nom1;
+                    command.Parameters.Add("prenom1", MySqlDbType.String).Value = user.Prenom1;
+                    command.Parameters.Add("date_naissance", MySqlDbType.Date).Value = user.Date_Naissance;
+                    //Execute the reader
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            // J'ajoute tous les utilsateurs dans la collection
+                            users.Add(
+                                new User()
+                                {
+                                    UserId = reader.GetInt32(0),
+                                    Nom1 = reader.GetString(1),
+                                    Nom2 = reader.GetString(2),
+                                    Prenom1 = reader.GetString(3),
+                                    Prenom2 = reader.GetString(4),
+                                    Date_Naissance = reader.GetDateTime(5)
+                                }
+                                );
+                        }
+                    }
+                }
+            }
+
+            return users;
+        }
+        #endregion
 
     }
 }
 
-#endregion
+
 
 
