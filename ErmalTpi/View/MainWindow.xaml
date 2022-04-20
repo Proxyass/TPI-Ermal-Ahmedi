@@ -32,12 +32,7 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="1*" />
                 </Grid.RowDefinitions>
-                <TextBlock
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Center"
-                    FontSize="18">
-                    Titre de l'événement
-                </TextBlock>
+                <ComboBox Margin="30 20 5 00" SelectedIndex="0" ItemsSource="{Binding Events}" DisplayMemberPath="EventName" SelectedItem="{Binding SelectedEvent}"></ComboBox>
                 <TextBlock
                     Grid.Row="1"
                     Margin="30,0"
@@ -92,7 +87,6 @@
                     SelectedDate="{Binding SelectedUser.Date_Naissance, UpdateSourceTrigger=PropertyChanged}" />
                 <Button Grid.Row="9" Margin="30,5,5,5" Command="{Binding Command}" CommandParameter="SearchManually">Rechercher</Button>
             </Grid>
-
             <Grid Grid.Column="1" Margin="10">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="100" />
@@ -109,9 +103,7 @@
                         Margin="00,0"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
-                        FontSize="15">
-                        UID
-                    </TextBlock>
+                        FontSize="15" Text=""/>
                     <Grid Grid.Row="1">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="1*" />
@@ -120,14 +112,13 @@
                             <ColumnDefinition Width="1*" />
                         </Grid.ColumnDefinitions>
                         <TextBox
-                        Grid.Row="1"
-                        Margin="00,0,5,0"
+                        Margin="0,0,111,25"
                         VerticalContentAlignment="Center"
                         FontSize="17"
                         Text="{Binding UID, UpdateSourceTrigger=PropertyChanged}" />
                         <!-- View.Model.RelayCommand { Command } -->
 
-                        <Button Grid.Column="1" Margin="10 0"  Command="{Binding Command}" CommandParameter="SearchByUID">Chercher</Button>
+                        <Button Grid.Column="1" Margin="10,0,94,25"  Command="{Binding Command}" CommandParameter="SearchByUID">Chercher</Button>
 
                     </Grid>
                     <Grid Grid.Row="3" Margin="5 2">
@@ -192,30 +183,56 @@
                 <ColumnDefinition Width=".61*" />
                 <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
-            <Grid Grid.ColumnSpan="2" Margin="0,0,475,38">
+            <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1*" />
                     <RowDefinition Height="1*" />
                     <RowDefinition Height="1*" />
                     <RowDefinition Height="1*" />
                 </Grid.RowDefinitions>
-                <Border  Background="{Binding BackColor}"  Margin="10 0" BorderBrush="Black" BorderThickness=".5" Grid.Row="1"></Border>
+                <Border  Background="{Binding BackColor}"  Margin="10 0" BorderBrush="Black" BorderThickness=".5" Grid.Row="1">
+
+                </Border>
                 <Button Grid.Row="2" Margin="10 5" FontSize="15" Click="Close">Exit</Button>
+                <TextBlock x:Name="textBlock1" HorizontalAlignment="Left" Margin="10,29,0,0" TextWrapping="Wrap" Text="{Binding OutText}" VerticalAlignment="Top"/>
+                <Image x:Name="image" HorizontalAlignment="Left" Height="33" Grid.Row="3" VerticalAlignment="Center" Width="167" Source="/Ressources/CHUV-LOGOONE.png"/>
             </Grid>
-
-
-            <Border  Background="{Binding CovidColor}"  Margin="19,48,286,109" BorderBrush="Black" BorderThickness=".5" Grid.Column="1"/>
-            <TextBlock
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    FontSize="18" Grid.Column="1" Margin="19,13,0,0" Height="30" Width="170" RenderTransformOrigin="0.56,0.479" Text="{Binding TextBlockee}" />
-            <Rectangle Grid.Column="1" HorizontalAlignment="Left" Height="80" Margin="8,10,0,0" Stroke="Black" VerticalAlignment="Top" Width="194"/>
-            <Image x:Name="image" HorizontalAlignment="Left" Height="25" Margin="10,147,0,0" VerticalAlignment="Top" Width="135" Source="/View/CHUV-LOGO.jpg" RenderTransformOrigin="0.503,0.587"/>
-            <Grid HorizontalAlignment="Left" Height="57" Margin="0,113,0,0" VerticalAlignment="Top" Width="280">
-                <Image x:Name="LOGO_CHUV" HorizontalAlignment="Left" Height="53" VerticalAlignment="Top" Width="276" Source="/Ressources/CHUV-LOGOONE.png"/>
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="10" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height=".31*" />
+                    <RowDefinition Height=".1*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Margin="195,-10,0,5" Grid.ColumnSpan="2">Compteur présence</TextBlock>
+                <Border BorderBrush="Black" BorderThickness=".31" Margin="195,5,5,5"  Grid.Row="2" Grid.ColumnSpan="2">
+                    <TextBlock  FontSize="18" Margin="10,0,0,0" >
+                    <Run>Nb entrée: </Run> <Run Text="{Binding UsersIn.Count,FallbackValue=0,Mode=OneWay}"></Run>
+                    <LineBreak/>
+                    <Run>Capacité: </Run> <Run Text="{Binding UsersIn.Count,FallbackValue=0,Mode=OneWay}"></Run> <Run>/</Run> <Run Text="{Binding RoomCapacity,FallbackValue=0}"></Run>
+                    <LineBreak/>
+                    <Run>Nb sortie: </Run> <Run Text="{Binding TotalOut,FallbackValue=0}"></Run>
+                    </TextBlock>
+                </Border>
+                <Label Grid.Row="3"
+                       HorizontalContentAlignment="Right" Margin="0 0 10 0"
+                       FontSize="17"
+                       VerticalAlignment="Center">Capacité salle</Label>
+                <TextBox 
+                       FontSize="17"
+                    VerticalContentAlignment="Center"
+                    Text="{Binding RoomCapacity,UpdateSourceTrigger=PropertyChanged}"
+                       Grid.Column="1" Grid.Row="3"/>
+                <Border Background="{Binding CovidColor}" BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="22" Margin="36,26,0,0" Grid.Row="2" VerticalAlignment="Top" Width="142"/>
+                <TextBlock x:Name="textBlock" HorizontalAlignment="Center" Margin="0,5,0,0" Grid.Row="2" TextWrapping="Wrap" VerticalAlignment="Top" Width="142"><Run Language="fr-ch" Text="{Binding TextBlockee}"/></TextBlock>
+                <Rectangle HorizontalAlignment="Left" Height="54" Margin="26,1,0,0" Grid.Row="2" Stroke="Black" VerticalAlignment="Top" Width="162"/>
             </Grid>
         </Grid>
-
 
     </Grid>
 </Window>
